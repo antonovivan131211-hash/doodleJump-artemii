@@ -14,6 +14,7 @@ public class GameResources {
     public static final String BUTTON_LONG_BG_IMG_PATH = "button_background_long.png";
     public static final String BULLET_IMG_PATH = "bullet.png";
     public static final String BACKGROUND_MUSIC_PATH = "81cebf7e45fdef7.mp3";
+    public static final String ZVuk_Vistrila = "slimeplopsmallsp.mp3";
 
     public static final String TRASH_PATH = "trash.png";
 

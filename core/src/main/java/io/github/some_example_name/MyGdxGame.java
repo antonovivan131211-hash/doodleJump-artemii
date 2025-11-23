@@ -117,4 +117,8 @@ public class MyGdxGame extends Game {
     public void setGamePaused(boolean isPaused) {
         this.isGamePaused = isPaused;
     }
+
+    public void resetAccumulator() {
+        this.accumulator = 0;
+    }
 }

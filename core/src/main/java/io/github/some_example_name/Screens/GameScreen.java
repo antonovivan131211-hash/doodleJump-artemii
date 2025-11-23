@@ -183,6 +183,7 @@ public class GameScreen extends ScreenAdapter {
         draw();
     }
 
+
     private String formatTime(float totalSeconds) {
         int minutes = (int) (totalSeconds / 60);
         int seconds = (int) (totalSeconds % 60);
@@ -362,7 +363,9 @@ public class GameScreen extends ScreenAdapter {
                         GameSettings.BULLET_WIDTH,
                         GameSettings.BULLET_HEIGHT,
                         GameResources.BULLET_IMG_PATH,
-                        myGdxGame.world);
+                        myGdxGame.world,
+                        myGdxGame.soundManager
+                    );
                     bulletArray.add(laserBullet);
                 }
             }
@@ -379,6 +382,7 @@ public class GameScreen extends ScreenAdapter {
             if (continueButton.isHit((int)touchPos.x, (int)touchPos.y)) {
                 gameSession.resumeGame();
                 myGdxGame.setGamePaused(false);
+                myGdxGame.resetAccumulator();
                 System.out.println("Game resumed");
             }
         }
@@ -461,5 +465,8 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         platformManager.dispose();
+        if (backGround != null) {
+            backGround.dispose();
+        }
     }
 }

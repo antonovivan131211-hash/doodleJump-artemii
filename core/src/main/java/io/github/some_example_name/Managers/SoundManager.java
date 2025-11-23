@@ -9,6 +9,7 @@ import io.github.some_example_name.Static.GameResources;
 public class SoundManager {
     private Sound jumpSound;
     private Sound deathSound;
+    private Sound shotSound;
 
     private Music backgroundMusic;
     private boolean soundsEnabled = true;
@@ -28,6 +29,7 @@ public class SoundManager {
         try {
             jumpSound = Gdx.audio.newSound(Gdx.files.internal(GameResources.JUMP_SOUND_PATH));
             deathSound = Gdx.audio.newSound(Gdx.files.internal(GameResources.DEATH_SOUND_PATH));
+            shotSound = Gdx.audio.newSound(Gdx.files.internal(GameResources.ZVuk_Vistrila));
             System.out.println("✅ Sounds loaded successfully");
         } catch (Exception e) {
             System.err.println("❌ Error loading sounds: " + e.getMessage());
@@ -78,6 +80,12 @@ public class SoundManager {
         }
     }
 
+    public void playShotSound() {
+        if (soundsEnabled && shotSound != null) {
+            shotSound.play(volume);
+        }
+    }
+
     public void setVolume(float volume) {
         this.volume = Math.max(0, Math.min(1, volume));
         if (backgroundMusic != null) {
@@ -91,6 +99,9 @@ public class SoundManager {
         }
         if (deathSound != null) {
             deathSound.dispose();
+        }
+        if (shotSound != null) {
+            shotSound.dispose();
         }
         if (backgroundMusic != null) {
             backgroundMusic.dispose();
