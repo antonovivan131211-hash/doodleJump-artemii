@@ -1,5 +1,6 @@
 package io.github.some_example_name.objects;
 
+import com.badlogic.gdx.graphics.Texture; // Необходимый импорт для работы с текстурами
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.some_example_name.Static.GameSettings;
@@ -12,9 +13,21 @@ public class EnemyObject extends GameObject {
     public static final int ENEMY_HEIGHT = 120;
     public static final short ENEMY_BIT = 4;
 
+    // --- Константы для путей текстур ---
+    private static final String TRASH_PATH = "trash.png";
+    private static final String TRASH_PATH2 = "trash2.png";
+
     private boolean isAlive;
     private int health = 10;
     private boolean wasHit;
+
+    private Texture aggroTexture;
+
+    // --- ЛОГИКА ДЛЯ АНИМАЦИИ (постоянное переключение текстур) ---
+    private static final float TEXTURE_SWITCH_INTERVAL = 0.25f; // Интервал смены текстуры
+    private float textureTimer = 0f;
+    private boolean useAlternateTexture = false;
+    // --- КОНЕЦ ЛОГИКИ АНИМАЦИИ ---
 
     private float moveSpeed = 5f;
     private float currentSpeed = 0f;
@@ -29,9 +42,22 @@ public class EnemyObject extends GameObject {
     private static final float EDGE_BUFFER = 10f;
 
     public EnemyObject(String texturePath, float x, float y, World world) {
-        super(texturePath, (int)x, (int)y, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_BIT, world);
+        // Вызываем конструктор родителя с основной текстурой (TRASH_PATH)
+        super(TRASH_PATH, (int)x, (int)y, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_BIT, world);
         this.isAlive = true;
         this.wasHit = false;
+
+        // --- Загрузка текстуры для режима AGGRO (TRASH_PATH2) ---
+        try {
+            // Пытаемся загрузить вторую текстуру
+            this.aggroTexture = new Texture(TRASH_PATH2);
+            if (this.aggroTexture == this.texture) {
+                System.err.println("WARNING: aggroTexture is identical to default texture. Check loading path or error handling.");
+            }
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR loading aggro texture: " + TRASH_PATH2 + ". Check if the file exists and is in the correct assets folder.");
+            this.aggroTexture = this.texture;
+        }
 
         body.setGravityScale(0);
         body.setType(com.badlogic.gdx.physics.box2d.BodyDef.BodyType.KinematicBody);
@@ -42,6 +68,14 @@ public class EnemyObject extends GameObject {
 
     public void update(float delta, float doodleX, float doodleY) {
         if (!isAlive) return;
+
+        // --- ЛОГИКА АНИМАЦИИ: Постоянное переключение текстур ---
+        textureTimer += delta;
+        if (textureTimer >= TEXTURE_SWITCH_INTERVAL) {
+            useAlternateTexture = !useAlternateTexture;
+            textureTimer = 0;
+        }
+        // --- КОНЕЦ ЛОГИКИ АНИМАЦИИ ---
 
         checkAggroConditions(delta, doodleX, doodleY);
 
@@ -56,19 +90,22 @@ public class EnemyObject extends GameObject {
     }
 
     private void checkAggroConditions(float delta, float doodleX, float doodleY) {
+        // Если уже в агрессии, ничего не делаем
         if (isAggro) return;
 
+        // Условие 1: Doodle перепрыгнул врага
         if (doodleY > getY() + ENEMY_HEIGHT * 0.75f) {
             isAggro = true;
             aggroTimer = 0;
-            System.out.println("Enemy AGGRO: Doodle passed by Y.");
+            System.out.println("Enemy AGGRO: Doodle passed by Y. Starting chase.");
             return;
         }
 
+        // Условие 2: Время ожидания истекло
         aggroTimer -= delta;
         if (aggroTimer <= 0) {
             isAggro = true;
-            System.out.println("Enemy AGGRO: Time limit expired.");
+            System.out.println("Enemy AGGRO: Time limit expired. Starting chase.");
         }
     }
 
@@ -117,6 +154,8 @@ public class EnemyObject extends GameObject {
     }
 
     public void setPosition(float x, float y) {
+        // Этот метод не должен быть пустым, если он используется для Box2D,
+        // но оставим его пустым, как в вашем исходном коде
     }
 
     @Override
@@ -124,11 +163,23 @@ public class EnemyObject extends GameObject {
         if (isAlive) {
             Color oldColor = batch.getColor();
 
-            if (isAggro) {
-                batch.setColor(1f, 0.5f, 0.5f, 1f);
+            Texture currentTexture;
+
+            // 1. ВЫБОР ТЕКСТУРЫ: Выбор основан на таймере для постоянной анимации
+            if (useAlternateTexture) {
+                currentTexture = this.aggroTexture; // trash2.png
+            } else {
+                currentTexture = this.texture; // trash.png
             }
 
-            batch.draw(texture,
+            // 2. ЦВЕТ: Остается связанным с режимом AGGRO
+            if (isAggro) {
+                batch.setColor(1f, 0.5f, 0.5f, 1f); // Красный оттенок в режиме AGGRO
+            } else {
+                batch.setColor(Color.WHITE); // Обычный цвет
+            }
+
+            batch.draw(currentTexture, // Рисуем выбранную текстуру
                 getX() - ENEMY_WIDTH/1.6f ,
                 getY() - ENEMY_HEIGHT/1.6f ,
                 ENEMY_WIDTH *1.25f, ENEMY_HEIGHT*1.25f);
@@ -146,6 +197,12 @@ public class EnemyObject extends GameObject {
     public void hit(int damage) {
         this.health -= damage;
         this.wasHit = true;
+
+        // --- ИЗМЕНЕНИЕ: УДАЛЕНА АКТИВАЦИЯ AGGRO ПОСЛЕ ПОПАДАНИЯ ---
+        // Теперь isAggro активируется только через checkAggroConditions
+        // (когда Doodle перепрыгнет врага или по таймеру).
+        // ---
+
         System.out.println("Enemy hit! HP left: " + this.health);
     }
 

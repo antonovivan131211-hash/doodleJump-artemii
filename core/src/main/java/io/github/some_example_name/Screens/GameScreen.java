@@ -62,7 +62,6 @@ public class GameScreen extends ScreenAdapter {
 
     private boolean leftButtonPressed = false;
     private boolean rightButtonPressed = false;
-
     public GameScreen(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
         batch = myGdxGame.batch;
