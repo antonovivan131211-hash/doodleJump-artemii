@@ -129,9 +129,9 @@ public class EnemyObject extends GameObject {
             }
 
             batch.draw(texture,
-                getX() - ENEMY_WIDTH / 2f,
-                getY() - ENEMY_HEIGHT / 2f,
-                ENEMY_WIDTH, ENEMY_HEIGHT);
+                getX() - ENEMY_WIDTH/1.6f ,
+                getY() - ENEMY_HEIGHT/1.6f ,
+                ENEMY_WIDTH *1.25f, ENEMY_HEIGHT*1.25f);
 
             batch.setColor(oldColor);
         }

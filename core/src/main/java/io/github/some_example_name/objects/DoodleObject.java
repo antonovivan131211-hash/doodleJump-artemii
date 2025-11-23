@@ -112,16 +112,24 @@ public class DoodleObject extends GameObject {
     private void checkHeightAchievements() {
         if (game == null || game.achievementManager == null) return;
 
+        if (currentScore >= 10000 && !game.achievementManager.isAchievementUnlocked("height_10000")) {
+            game.achievementManager.unlockAchievement("height_10000");
+        }
+
         if (currentScore >= 5000 && !game.achievementManager.isAchievementUnlocked("height_5000")) {
             game.achievementManager.unlockAchievement("height_5000");
         }
 
-        if (currentScore >= 1000 && !game.achievementManager.isAchievementUnlocked("height_100")) {
-            game.achievementManager.unlockAchievement("height_100");
+        if (currentScore >= 1000 && !game.achievementManager.isAchievementUnlocked("height_1000")) {
+            game.achievementManager.unlockAchievement("height_1000");
         }
 
         if (currentScore >= 500 && !game.achievementManager.isAchievementUnlocked("height_500")) {
             game.achievementManager.unlockAchievement("height_500");
+        }
+
+        if (currentScore >= 100 && !game.achievementManager.isAchievementUnlocked("height_100")) {
+            game.achievementManager.unlockAchievement("height_100");
         }
     }
 

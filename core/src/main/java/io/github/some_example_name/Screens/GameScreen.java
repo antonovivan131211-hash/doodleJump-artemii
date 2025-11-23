@@ -75,6 +75,7 @@ public class GameScreen extends ScreenAdapter {
 
         resetCamera();
 
+
         platformManager = new PlatformManager(myGdxGame.world);
 
         doodleObject = new DoodleObject(
@@ -407,24 +408,30 @@ public class GameScreen extends ScreenAdapter {
     private void resetGame() {
         System.out.println("Resetting game...");
 
+        myGdxGame.disposeWorld();
+        myGdxGame.createWorld();
+
         for (BulletObject bullet : bulletArray) {
-            if (bullet.body != null) {
-                myGdxGame.world.destroyBody(bullet.body);
-            }
         }
         bulletArray.clear();
 
         for (EnemyObject enemy : enemyArray) {
-            if (enemy.body != null) {
-                myGdxGame.world.destroyBody(enemy.body);
-            }
         }
         enemyArray.clear();
 
         platformManager.dispose();
         platformManager = new PlatformManager(myGdxGame.world);
 
-        doodleObject.respawn();
+        doodleObject = new DoodleObject(
+            GameResources.DOODLE_PATH,
+            GameSettings.SCREEN_WIDTH / 2,
+            (int) platformManager.getStartY(),
+            GameSettings.DOODLE_WIDTH,
+            GameSettings.DOODLE_HEIGHT,
+            GameSettings.DOODLE_BIT,
+            myGdxGame.world,
+            myGdxGame
+        );
 
         contactManager = new ContactManager(myGdxGame.world, doodleObject, myGdxGame);
 

@@ -18,7 +18,7 @@ public class MenuScreen extends ScreenAdapter {
     ImageView backgroundView;
     TextView titleView;
     ButtonView startButtonView, recordsButtonView, settingsButtonView, achievementsButtonView, exitButtonView;
-    ButtonView authorsButtonView; // <-- Новая кнопка
+    ButtonView authorsButtonView;
 
     public MenuScreen(MyGdxGame myGdxGame) {
         this.myGdxGame = myGdxGame;
@@ -34,17 +34,15 @@ public class MenuScreen extends ScreenAdapter {
         achievementsButtonView = new ButtonView(140, 391, 440, 70, myGdxGame.commonBlackFont, GameResources.BUTTON_LONG_BG_IMG_PATH, "achievements");
 
         exitButtonView = new ButtonView(140, 306, 440, 70, myGdxGame.commonBlackFont, GameResources.BUTTON_LONG_BG_IMG_PATH, "exit");
-
-        // Кнопка Авторов: маленькая, квадратная, с буквой 'A'. Размещаем внизу слева.
         float buttonSize = 70;
         authorsButtonView = new ButtonView(
-            140, // x: Левый край
-            200, // y: Ниже кнопки exit
+            140,
+            200,
             buttonSize,
             buttonSize,
-            myGdxGame.largeWhiteFont, // Используем largeWhiteFont для буквы 'A'
-            GameResources.BUTTON_SHORT_BG_IMG_PATH, // Используем короткий фон для квадратной кнопки
-            "A" // Текст на кнопке
+            myGdxGame.largeWhiteFont,
+            GameResources.BUTTON_SHORT_BG_IMG_PATH,
+            "A"
         );
     }
 
@@ -76,7 +74,7 @@ public class MenuScreen extends ScreenAdapter {
         settingsButtonView.draw(myGdxGame.batch);
         recordsButtonView.draw(myGdxGame.batch);
         startButtonView.draw(myGdxGame.batch);
-        authorsButtonView.draw(myGdxGame.batch); // <-- Отрисовка новой кнопки
+        authorsButtonView.draw(myGdxGame.batch);
 
         myGdxGame.batch.end();
     }
@@ -103,7 +101,7 @@ public class MenuScreen extends ScreenAdapter {
                 myGdxGame.setScreen(myGdxGame.achievementScreen);
             }
 
-            if (authorsButtonView.isHit(myGdxGame.touch.x, myGdxGame.touch.y)) { // <-- Обработка новой кнопки
+            if (authorsButtonView.isHit(myGdxGame.touch.x, myGdxGame.touch.y)) {
                 myGdxGame.setScreen(myGdxGame.authorsScreen);
             }
         }
@@ -119,6 +117,6 @@ public class MenuScreen extends ScreenAdapter {
         settingsButtonView.dispose();
         recordsButtonView.dispose();
         startButtonView.dispose();
-        authorsButtonView.dispose(); // <-- Освобождение ресурса
+        authorsButtonView.dispose();
     }
 }

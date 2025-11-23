@@ -55,7 +55,7 @@ public class MyGdxGame extends Game {
     @Override
     public void create() {
         Box2D.init();
-        world = new World(new Vector2(0, -50), true);
+        createWorld();
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         gameSession = new GameSession();
@@ -84,9 +84,21 @@ public class MyGdxGame extends Game {
         setScreen(menuScreen);
     }
 
+    public void createWorld() {
+        world = new World(new Vector2(0, -50), true);
+    }
+
+    public void disposeWorld() {
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
+    }
+
     @Override
     public void dispose() {
         batch.dispose();
+        disposeWorld();
         if (soundManager != null) {
             soundManager.dispose();
         }
